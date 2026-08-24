@@ -7,6 +7,7 @@ pipeline {
         ECR_REGISTRY = '479403398095.dkr.ecr.ap-south-1.amazonaws.com'
         IMAGE_TAG = "${BUILD_NUMBER}"
         EKS_CLUSTER = 'eks-devops-cluster'
+        KUBECONFIG = '/var/lib/jenkins/.kube/config'
     }
 
     stages {
@@ -48,7 +49,8 @@ pipeline {
                 sh '''
                 aws eks update-kubeconfig \
                     --region ${AWS_REGION} \
-                    --name ${EKS_CLUSTER}
+                    --name ${EKS_CLUSTER} \
+                    --kubeconfig ${KUBECONFIG}
 
                 sed -i "s|image:.*|image: ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}|" kubernetes/deployment.yaml
 
